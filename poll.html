@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add additional CSS in static file -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+
+      function hashCode() {
+        var date = new Date();
+        var hash = 0;
+        var dateStr = date.toString();
+        var dateFmt = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+
+        for (i = 0; i < dateStr.length; i++) {
+          hash = Math.imul(31, hash) + dateStr.charCodeAt(i) | 0;
+        }
+        
+        if ( hash < 0 ) {
+          hash = hash * (-1)
+        }
+
+        hash = Math.trunc(hash / 1000)
+
+        return [ "aut"+hash, dateFmt ];
+
+      }
+
+      function getDataAndRedirectToWhatsapp() {
+
+        console.log('getDataForWhatsapp')
+
+        let msgText = '';
+
+        msgText += '*Aposta de:* \n';
+        msgText += document.getElementById("inputApostador").value + '\n\n';
+        msgText += '*Resultado:* \n';
+        msgText += document.getElementById("inputResultadoGeral").value + '\n\n';
+        msgText += '*Primeiro Jogador do Palmeiras a Fazer Gol:* \n';
+        msgText += document.getElementById("inputPrimeiroJogadorGol").value + '\n';
+        msgText += '*Minuto do Primeiro Gol:* \n';
+        msgText += document.getElementById("inputMinutoPrimeiroGol").value + '\n';
+        msgText += '*Primeiro Jogador do Palmeiras a Tomar Cartao:* \n';
+        msgText += document.getElementById("inputPrimeiroCartao").value + '\n';
+        msgText += '*Primeiro lance do jogo:* \n';
+        msgText += document.querySelector('input[name="radioPrimeiroLance"]:checked').value + '\n\n';
+        msgText += '*Teremos Penalti?* \n';
+        msgText += document.querySelector('input[name="radioTeremosPenalti"]:checked').value + '\n';
+        msgText += '*Teremos Gol nos Acrescimos?* \n';
+        msgText += document.querySelector('input[name="radioTeremosGolAcrescimos"]:checked').value + '\n';
+        msgText += '*Teremos Gol de Cabeca?* \n';
+        msgText += document.querySelector('input[name="radioTeremosGolCabeca"]:checked').value + '\n\n';
+        msgText += '*Nro. de Escanteios do Palmeiras:* \n';
+        msgText += document.getElementById("inputNumeroEscanteios").value + '\n';
+        msgText += '*Nro. de Impedimentos do Palmeiras:* \n';
+        msgText += document.getElementById("inputNumeroImpedimentos").value + '\n\n';
+        msgText += '_Horario da Aposta:_ ' + document.getElementById("date").value + '\n';
+        msgText += '_Identificador:_ ' + document.getElementById("aut").value + '\n';
+
+        window.location.href = "https://wa.me/?text=" + encodeURIComponent(msgText);
+
+      }
+
+      function setHiddenValues() {
+        document.getElementById("aut").value = hashCode()[0];
+        document.getElementById("date").value = hashCode()[1];
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.has('test')) {
+          document.getElementById("flagTest").value = "True";
+        } else {
+          document.getElementById("flagTest").value = "False";
+        }
+      } 
+
+    </script>
+  </head>
+  <body style="background-color: rgb(0, 0, 0);">
+    <form  action="sendbet" method="post" onsubmit="setHiddenValues()">
+
+      <input type="hidden" name="aut" id="aut"/>
+      <script>      document.getElementById("aut").value = hashCode()[0];</script>
+
+      <input type="hidden" name="date" id="date"/>
+      <script>      document.getElementById("date").value = hashCode()[1];</script>
+
+      <input type="hidden" name="flagTest" id="flagTest"/>
+
+      <div class="container-fluid" style="background-color: rgb(0, 0, 0);">
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="box" style="visibility: visible;" ><img src="https://pbs.twimg.com/media/Du8TKaMW0AA7Lnc.jpg"></div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+              <!--  Apostador -->
+            <div class="form-group">
+              <label for="inputApostador" style="color: rgb(179, 209, 179);">Apostador:</label>
+              <input type="text" class="form-control" name="inputApostador" id="inputApostador" placeholder="Digite seu nome aqui" >
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+              <!--  Resultado Geral -->
+            <div class="form-group">
+              <label for="inputResultadoGeral" style="color: rgb(179, 209, 179);">Resultado Geral</label>
+              <input type="text" class="form-control" name="inputResultadoGeral" id="inputResultadoGeral" placeholder="Ex.: Palmeiras 4x0" >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Jogador do Palmeiras a marcar o Primeiro Gol -->
+            <div class="form-group">
+              <label for="inputPrimeiroJogadorGol" style="color: rgb(179, 209, 179);">Jogador do Palmeiras a marcar o Primeiro Gol</label>
+              <input type="text" class="form-control" name="inputPrimeiroJogadorGol" id="inputPrimeiroJogadorGol" placeholder="Ex.: Ademir da Ghia"  >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Minuto do Primeiro Gol -->
+            <div class="form-group">
+              <label for="inputMinutoPrimeiroGol" style="color: rgb(179, 209, 179);">Minuto do Primeiro Gol</label>
+              <input type="text" class="form-control" name="inputMinutoPrimeiroGol" id="inputMinutoPrimeiroGol" placeholder="Ex.: 25 min do Primeiro Tempo"  >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Primeiro Lance -->
+            <label class="form-label" for="form12" style="color: rgb(179, 209, 179);">Primeiro lance do jogo</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioPrimeiroLance" id="radioPrimeiroLance0" value="Lateral" checked/>
+              <label class="form-check-label" for="radioPrimeiroLance1" style="color: grey;"> Lateral (+1 pt)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioPrimeiroLance" id="radioPrimeiroLance1" value="Falta"/>
+              <label class="form-check-label" for="radioPrimeiroLance0" style="color: grey;"> Falta (+2 pts)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioPrimeiroLance" id="radioPrimeiroLance2" value="Impedimento"/>
+              <label class="form-check-label" for="radioPrimeiroLance2" style="color: grey;"> Impedimento (+5 pts)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioPrimeiroLance" id="radioPrimeiroLance3" value="Escanteio" />
+              <label class="form-check-label" for="radioPrimeiroLance3" style="color: grey;"> Escanteio (+8 pts)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioPrimeiroLance" id="radioPrimeiroLance4" value="Gol"/>
+              <label class="form-check-label" for="radioPrimeiroLance4" style="color: grey;"> Gol (+15 pts)</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Teremos Penalti -->
+            <label class="form-label" for="form12" style="color: rgb(179, 209, 179);">Teremos Penalti?</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosPenalti" id="radioTeremosPenalti1" value="Sim" checked/>
+              <label class="form-check-label" for="radioTeremosPenalti1" style="color: grey;"> Sim </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosPenalti" id="radioTeremosPenalti2" value="Nao" />
+              <label class="form-check-label" for="radioTeremosPenalti2" style="color: grey;"> Não </label>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Teremos Gol nos Acrescimos -->
+            <label class="form-label" for="form12" style="color: rgb(179, 209, 179);">Teremos Gol nos Acrescimos?</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosGolAcrescimos" id="radioTeremosGolAcrescimos1" value="Sim" checked/>
+              <label class="form-check-label" for="radioTeremosGolAcrescimos1" style="color: grey;"> Sim </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosGolAcrescimos" id="radioTeremosGolAcrescimos2" value="Nao"/>
+              <label class="form-check-label" for="radioTeremosGolAcrescimos2" style="color: grey;"> Não </label>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Teremos Gol de Cabeca -->
+            <label class="form-label" for="form12" style="color: rgb(179, 209, 179);">Teremos Gol de Cabeça?</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosGolCabeca" id="radioTeremosGolCabeca1" value="Sim" checked/>
+              <label class="form-check-label" for="radioTeremosGolCabeca1" style="color: grey;"> Sim </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="radioTeremosGolCabeca" id="radioTeremosGolCabeca2" value="Nao"/>
+              <label class="form-check-label" for="radioTeremosGolCabeca2" style="color: grey;"> Não </label>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Numero de Escanteios do Palmeiras -->
+            <div class="form-group">
+              <label for="inputNumeroEscanteios" style="color: rgb(179, 209, 179);">Numero de Escanteios do Palmeiras</label>
+              <input type="text" class="form-control" name="inputNumeroEscanteios" id="inputNumeroEscanteios" placeholder="Ex.: 8" >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Primeiro Jogador do Pameiras a Tomar Cartao -->
+            <div class="form-group">
+              <label for="inputPrimeiroCartao" style="color: rgb(179, 209, 179);">Primeiro Jogador do Palmeiras a Tomar Cartao</label>
+              <input type="text" class="form-control" name="inputPrimeiroCartao" id="inputPrimeiroCartao" placeholder="Ex.: Evair" >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <!--  Numero de Impedimentos do Palmeiras -->
+            <div class="form-group">
+              <label for="inputNumeroImpedimentos" style="color: rgb(179, 209, 179);">Numero de Impedimentos do Palmeiras</label>
+              <input type="text" class="form-control" name="inputNumeroImpedimentos" id="inputNumeroImpedimentos" placeholder="Ex.: 3" >
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <!--  Submit -->
+            <div style="display: inline-block; padding: 10px; background-color: #134215; border-radius: 8px; cursor: pointer;">
+              <label onclick="getDataAndRedirectToWhatsapp()" style="color: rgb(179, 209, 179);">Enviar Aposta</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </body>
+</html>
